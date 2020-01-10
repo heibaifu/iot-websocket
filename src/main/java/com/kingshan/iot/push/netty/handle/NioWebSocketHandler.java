@@ -89,11 +89,9 @@ public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
      */
     private void handleHttpRequest(ChannelHandlerContext ctx,
                                    FullHttpRequest req) {
-        if (!req.decoderResult().isSuccess()
-                || (!"websocket".equals(req.headers().get("Upgrade")))) {
+        if (!req.decoderResult().isSuccess() || (!"websocket".equals(req.headers().get("Upgrade")))) {
             //不是websocket方式，返回BAD_REQUEST
-            sendHttpResponse(ctx, req, new DefaultFullHttpResponse(
-                    HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST));
+            sendHttpResponse(ctx, req, new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST));
             return;
         }
         WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
@@ -106,8 +104,8 @@ public class NioWebSocketHandler extends SimpleChannelInboundHandler<Object> {
             handshaker.handshake(ctx.channel(), req);
         }
         log.info("Websocket server received connection request  url:" +  req.uri());
-        RequestParser requestParser = new RequestParser(req);
-        Map<String,String> map = requestParser.parse();
+        RequestParser requestParser = new RequestParser(req);   //请求解析
+        Map<String,String> map = requestParser.parse();         //解析参数到Map
         if(map != null && map.containsKey("userId") && map.containsKey("groupId") ){
             log.info("Client connected!  userId:" +  map.get("userId") + " and groupId:" + map.get("groupId"));
             ChannelSupervise.addChannel(map.get("userId"),map.get("groupId"),ctx.channel());
